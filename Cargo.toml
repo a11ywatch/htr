@@ -1,0 +1,9 @@
+[package]
+name = "htmlprops-to-react"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "convert html properties to react"
+
+[dependencies]
+lazy_static = "1.4.0"
