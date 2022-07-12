@@ -1,9 +1,14 @@
 [package]
-name = "htmlprops-to-react"
-version = "0.1.1"
+name = "html-to-react"
+version = "0.1.2"
 edition = "2021"
 license = "MIT"
 description = "convert html properties to react"
+readme = "README.md"
+keywords = ["html", "react", "html-converter", "react-converter"]
+categories = ["encoding", "parser-implementations", "web-programming"]
+documentation = "https://docs.rs/html-to-react"
+include = ["src/*", "LICENSE", "README.md"]
 
 [dependencies]
 lazy_static = "1.4.0"

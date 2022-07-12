@@ -1,4 +1,4 @@
-# htmlprops-to-react
+# html-to-react
 
 convert html props into valid react props
 
@@ -8,7 +8,7 @@ This project takes a html string and replaces the properties with the valid reac
 This helps when using find and replace tools since when you scrape content giving raw html and need a way to convert it back to the form it would be in a codebase to search.
 
 ```rust
-extern crate htmlprops_to_react;
+extern crate html_to_react;
 
 fn main(){
     let html = r#"<img class="something">"#;
