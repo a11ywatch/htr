@@ -1,10 +1,37 @@
+#![warn(missing_docs)]
+
+//! HTML to react transformer
+//!
+//! htr is a fast html to react
+//! transformer that uses btrees to search and replace
+//! html properties to the react equivalent.
+//!
+//! # How to use htr
+//!
+//! There are two ways to use htr:
+//!
+//! - **Convert props React** transform html string to a react string.
+//!   - [`convert_props_react`] is used to transform :blocking.
+//! - **Convert to React**  Lets you transform the html to a react component.
+//!   - [`convert_to_react`] is used to transform :blocking.
+//!
+//! [`convert_props_react`]: htr/fn.convert_props_react.html
+//! [`convert_to_react`]: htr/fn.convert_to_react.html
+//! 
+//! # Basic usage
+//!
+//! First, you will need to add `htr` to your `Cargo.toml`.
+//!
+//! Next, add your html to one of the transform methods to get your react,
+//! output.
+
 #[macro_use]
 extern crate lazy_static;
 
 extern crate convert_case;
 
-use std::collections::BTreeMap;
 use convert_case::{Case, Casing};
+use std::collections::BTreeMap;
 
 /// convert props to react
 pub fn convert_props_react(ctx: String) -> String {
@@ -285,7 +312,7 @@ pub fn convert_props_react(ctx: String) -> String {
             context = create_style_object(&mut context);
         } else {
             let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
-    
+
             if !value.is_empty() {
                 let v = format!("{}=", item);
                 let rp = format!("{}=", value);
@@ -333,7 +360,6 @@ fn extract_html_props(context: &String) -> Vec<String> {
     props
 }
 
-
 /// manipulate the style properties to react
 pub fn create_style_object(ctx: &mut String) -> String {
     let style_matcher = if ctx.contains("style='") {
@@ -344,10 +370,10 @@ pub fn create_style_object(ctx: &mut String) -> String {
 
     let style_start = format!(r#"style={}"#, style_matcher);
     let (style_string, start_idx, end_idx) = text_between(&ctx, &style_start, style_matcher);
-    
+
     let mut current_prop = String::from("");
     let mut space_before_text = false;
-    
+
     let mut style_replacer = style_string.clone();
 
     // get all html props into a vec
@@ -370,16 +396,44 @@ pub fn create_style_object(ctx: &mut String) -> String {
         }
     }
 
-    let style_replacer = format!("{}{}{}", "style={{", style_replacer, "}}");
+    let mut space_before_text = false;
+    let mut current_prop = String::from("");
 
-    ctx.replace_range(start_idx-7..start_idx + end_idx + 1, &style_replacer);
+    let mut style_clone = style_replacer.clone().to_owned();
+
+    // add double quotes to react props style values
+    for (i, c) in style_replacer.chars().enumerate() {
+        if space_before_text && c != ',' {
+            current_prop.push(c);
+        }
+
+        if space_before_text && c == ',' {
+            let current = current_prop.trim();
+            style_clone = style_clone.replace(&current, &format!(r#""{}""#, current).to_string());
+            space_before_text = false;
+        }
+
+        if c == ':' {
+            space_before_text = true;
+            current_prop.clear();
+        }
+
+        if i + 1 == style_replacer.len() {
+            let current = current_prop.trim();
+            style_clone = style_clone.replace(&current, &format!(r#""{}""#, current).to_string());
+            space_before_text = false;
+        }
+    }
+
+    let style_replacer = format!("{}{}{}", "style={{", style_clone, "}}");
+
+    ctx.replace_range(start_idx - 7..start_idx + end_idx + 1, &style_replacer);
 
     ctx.to_owned()
 }
 
-
 /// get the text between two strings
-fn text_between(search_str: &String, start_str: &String, end_str: &str) -> (String, usize, usize) { 
+fn text_between(search_str: &String, start_str: &String, end_str: &str) -> (String, usize, usize) {
     let start_idx = {
         let start_point = search_str.find(start_str);
         start_point.unwrap() + start_str.len()
@@ -389,6 +443,36 @@ fn text_between(search_str: &String, start_str: &String, end_str: &str) -> (Stri
     let end_idx = remaining.find(&end_str).unwrap_or(remaining.len());
 
     (remaining[..end_idx].to_string(), start_idx, end_idx)
+}
+
+/// convert props to a react component
+pub fn convert_to_react(ctx: String, component_name: String) -> String {
+    let react_html = convert_props_react(ctx);
+    let mut react_html = react_html.trim().to_owned();
+    
+    // remove html tags
+    if react_html.starts_with("<!DOCTYPE html>") {
+        react_html = react_html.replace("<!DOCTYPE html>", "");
+    }
+    if react_html.starts_with("<html>") {
+        react_html = react_html.replace("<html>", "");
+        react_html = react_html.replace("</html>", "");
+    }
+
+    let component_name = format!(" {}", component_name.trim());
+
+    let component = format!(
+        r#"import React from "react"
+    
+function{}() {{
+    return (
+        {}
+    )
+}}"#,
+        component_name, react_html
+    );
+
+    component
 }
 
 #[test]
@@ -432,7 +516,7 @@ fn convert_props_react_styles_test() {
     let props = convert_props_react(html.to_string());
 
     assert_eq!(
-        "<img style={{color: white, backgroundColor: black}}>",
+        r#"<img style={{color: "white", backgroundColor: "black"}}>"#,
         props
     );
 }
@@ -447,11 +531,42 @@ fn convert_props_react_children_test() {
     let props = convert_props_react(html.to_string());
 
     assert_eq!(
-        r###"<div className="something" htmlFor="mystuff" tabIndex="2" style={{color: white, backgroundColor: black}}>
-    <div className="child" htmlFor="mychildstuff" tabIndex="2" style={{color: white, backgroundColor: black}}>
+        r###"<div className="something" htmlFor="mystuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
+    <div className="child" htmlFor="mychildstuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
         child
     </div>
 </div>"###,
-    props
+        props
+    );
+}
+
+#[test]
+fn convert_react_component_test() {
+    let html = r#"<div class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">
+            <div class="child" for="mychildstuff" tabindex="2" style="color: white; background-color: black">
+                child
+            </div>
+        </div>"#;
+
+    let props = convert_to_react(html.trim().to_string(), "Something".to_string());
+
+    let style_object = r#"style={{color: "white", backgroundColor: "black"}}"#;
+
+    assert_eq!(
+        format!(
+            r###"import React from "react"
+    
+function Something() {{
+    return (
+        <div className="something" htmlFor="mystuff" tabIndex="2" {}>
+            <div className="child" htmlFor="mychildstuff" tabIndex="2" {}>
+                child
+            </div>
+        </div>
+    )
+}}"###,
+            style_object, style_object
+        ),
+        props
     );
 }

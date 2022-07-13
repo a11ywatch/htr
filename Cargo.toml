@@ -1,13 +1,13 @@
 [package]
-name = "html-to-react"
-version = "0.4.2"
+name = "htr"
+version = "0.5.2"
 edition = "2021"
 license = "MIT"
 description = "convert a html string to react"
 readme = "README.md"
 keywords = ["html", "react", "html-converter", "react-converter"]
 categories = ["encoding", "parser-implementations", "web-programming"]
-documentation = "https://docs.rs/html-to-react"
+documentation = "https://docs.rs/htr"
 include = ["src/*", "LICENSE", "README.md"]
 
 [dependencies]
