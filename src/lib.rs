@@ -13,10 +13,6 @@ pub fn convert_props_react(ctx: String) -> String {
     lazy_static! {
         /// html static list of properties that convert to camel-case [https://reactjs.org/docs/dom-elements.html]
         static ref HTML_PROPS: BTreeMap<&'static str, &'static str> = BTreeMap::from([
-            // special attributes
-            ("for", "htmlFor"),
-            ("class", "className"),
-            // end of special
             ("acceptcharset", "acceptCharset"),
             ("accesskey", "accessKey"),
             ("allowfullscreen", "allowFullScreen"),
@@ -27,6 +23,7 @@ pub fn convert_props_react(ctx: String) -> String {
             ("cellpadding", "cellPadding"),
             ("cellspacing", "cellSpacing"),
             ("charset", "charSet"),
+            ("class", "className"), // special html
             ("classid", "classID"),
             ("classname", "className"),
             ("colspan", "colSpan"),
@@ -35,6 +32,7 @@ pub fn convert_props_react(ctx: String) -> String {
             ("crossorigin", "crossOrigin"),
             ("datetime", "dateTime"),
             ("enctype", "encType"),
+            ("for", "htmlFor"), // special html
             ("formaction", "formAction"),
             ("formenctype", "formEncType"),
             ("formmethod", "formMethod"),

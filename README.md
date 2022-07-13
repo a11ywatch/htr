@@ -10,7 +10,7 @@ This helps when using find and replace tools when you scrape content getting raw
 
 ```toml
 [dependencies]
-html_to_react = "0.4.0"
+html_to_react = "0.4.2"
 ```
 
 ```rust
@@ -37,8 +37,7 @@ An [example](https://github.com/A11yWatch/a11ywatch/blob/main/cli/src/fs/code_fi
 
 ## TODO
 
-1. ~~Allow elements with child elements to convert ex: `<ul><li></li></ul>`~~.
-1. Allow dumping fully html to fragment components automatically.
+1. Convert html to usable react ready component.
 
 ## License
 
