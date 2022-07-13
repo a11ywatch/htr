@@ -307,10 +307,6 @@ fn extract_html_props(context: &String) -> Vec<String> {
     
     // get all html props into a vec
     for c in context.chars() {
-        // break on end tag ignoring children
-        if c == '>' {
-            break;
-        }
         if c == '=' {
             space_before_text = false;
             props.push((*current_prop).to_string());
@@ -425,11 +421,30 @@ fn extract_html_props_test() {
 
 #[test]
 fn convert_props_react_styles_test() {
-    let html = r#"<img class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">"#;
+    let html = r#"<img style="color: white; background-color: black">"#;
     let props = convert_props_react(html.to_string());
 
     assert_eq!(
-        "<img className=\"something\" htmlFor=\"mystuff\" tabIndex=\"2\" style={{color: white, backgroundColor: black}}>",
+        "<img style={{color: white, backgroundColor: black}}>",
         props
+    );
+}
+
+#[test]
+fn convert_props_react_children_test() {
+    let html = r#"<div class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">
+    <div class="child" for="mychildstuff" tabindex="2" style="color: white; background-color: black">
+        child
+    </div>
+</div>"#;
+    let props = convert_props_react(html.to_string());
+
+    assert_eq!(
+        r###"<div className="something" htmlFor="mystuff" tabIndex="2" style={{color: white, backgroundColor: black}}>
+    <div className="child" htmlFor="mychildstuff" tabIndex="2" style={{color: white, backgroundColor: black}}>
+        child
+    </div>
+</div>"###,
+    props
     );
 }
