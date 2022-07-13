@@ -10,7 +10,7 @@ This helps when using find and replace tools when you scrape content getting raw
 
 ```toml
 [dependencies]
-htr = "0.5.1"
+htr = "0.5.4"
 ```
 
 ```rust
@@ -57,7 +57,7 @@ fn main(){
 | `64gb apple silicon`                                  | `parse`                     |
 | :---------------------------------------------------- | :-------------------------- |
 | **`convert_props_react: simultaneous 1000 samples`**  | `4.86 us` (✅ **1.00x**)    |
-| **`convert_props_react: concurrent10x 1000 samples`** | `98.130 us` (✅ **10.00x**) |
+| **`convert_props_react: concurrent10x 1000 samples`** | `45.130 us` (✅ **10.00x**) |
 
 ## About
 

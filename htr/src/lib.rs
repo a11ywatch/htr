@@ -452,7 +452,7 @@ pub fn convert_to_react(ctx: String, component_name: String) -> String {
     
     // remove html tags
     if react_html.starts_with("<!DOCTYPE html>") {
-        react_html = react_html.replace("<!DOCTYPE html>", "");
+        react_html = react_html.replace("<!DOCTYPE html>", "").trim().to_owned();
     }
     if react_html.starts_with("<html>") {
         react_html = react_html.replace("<html>", "");
@@ -466,7 +466,9 @@ pub fn convert_to_react(ctx: String, component_name: String) -> String {
     
 function{}() {{
     return (
+        <>
         {}
+        </>
     )
 }}"#,
         component_name, react_html
@@ -558,11 +560,13 @@ fn convert_react_component_test() {
     
 function Something() {{
     return (
+        <>
         <div className="something" htmlFor="mystuff" tabIndex="2" {}>
             <div className="child" htmlFor="mychildstuff" tabIndex="2" {}>
                 child
             </div>
         </div>
+        </>
     )
 }}"###,
             style_object, style_object

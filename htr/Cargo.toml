@@ -1,10 +1,10 @@
 [package]
 name = "htr"
-version = "0.5.2"
+version = "0.5.4"
 edition = "2021"
 license = "MIT"
 description = "convert a html string to react"
-readme = "README.md"
+readme = "../README.md"
 keywords = ["html", "react", "html-converter", "react-converter"]
 categories = ["encoding", "parser-implementations", "web-programming"]
 documentation = "https://docs.rs/htr"

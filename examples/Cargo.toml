@@ -23,3 +23,7 @@ default-features = false
 [[example]]
 name = "example"
 path = "example.rs"
+
+[[example]]
+name = "transform"
+path = "transform.rs"
