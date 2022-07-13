@@ -1,0 +1,25 @@
+[package]
+name = "htr_examples"
+version = "0.5.1"
+edition = "2021"
+license = "MIT"
+description = "convert a html string to react"
+readme = "README.md"
+keywords = ["html", "react", "html-converter", "react-converter"]
+categories = ["encoding", "parser-implementations", "web-programming"]
+documentation = "https://docs.rs/htr"
+authors = ["j-mendez <jeff@a11ywatch.com>"]
+
+publish = false
+
+[badges]
+maintenance = { status = "as-is" }
+
+[dependencies.htr]
+version = "0.5.1"
+path = "../htr"
+default-features = false
+
+[[example]]
+name = "example"
+path = "example.rs"

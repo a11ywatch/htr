@@ -50,6 +50,15 @@ fn main(){
 }
 ```
 
+## Benchmark Results
+
+### transform
+
+| `64gb apple silicon`                                  | `parse`                     |
+| :---------------------------------------------------- | :-------------------------- |
+| **`convert_props_react: simultaneous 1000 samples`**  | `4.86 us` (✅ **1.00x**)    |
+| **`convert_props_react: concurrent10x 1000 samples`** | `98.130 us` (✅ **10.00x**) |
+
 ## About
 
 This project uses BTrees and parses the html with the order sorted before lookup for speed.

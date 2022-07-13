@@ -1,0 +1,14 @@
+[package]
+name = "benches"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+htr = { version = "0.5.1", path = "../htr" }
+criterion = { version = "0.3.5", features = ["html_reports"] }
+
+[[bench]]
+name = "transform"
+path = "transform.rs"
+harness = false
