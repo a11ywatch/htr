@@ -1,6 +1,6 @@
 # html-to-react
 
-convert html props into valid react props
+quickly convert html props into valid react props
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ fn main(){
     let html = r#"<img class="something">"#;
     let react_html = convert_props_react(html.to_string());
 
-    println!("{react_html}");
+    println!("{}", react_html);
     // <img className="something">
 }
 ```

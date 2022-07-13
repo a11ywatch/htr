@@ -1,15 +1,15 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 /// convert props to react
-pub fn convert_props_react(ctx: String) -> String {    
+pub fn convert_props_react(ctx: String) -> String {
     let mut context = ctx.clone();
 
     lazy_static! {
         /// html static list of properties that convert to camel-case [https://reactjs.org/docs/dom-elements.html]
-        static ref HTML_PROPS: HashMap<&'static str, &'static str> = HashMap::from([
+        static ref HTML_PROPS: BTreeMap<&'static str, &'static str> = BTreeMap::from([
             // special attributes
             ("for", "htmlFor"),
             ("class", "className"),
@@ -277,16 +277,47 @@ pub fn convert_props_react(ctx: String) -> String {
         ]);
     };
 
-    // TODO: parse context to get all keys split to check without full iteration
-    for (item, value) in HTML_PROPS.iter() {
-        if context.contains(&*item) {
+    let props: Vec<String> = extract_html_props(&context);
+
+    for item in props.iter() {
+        let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
+
+        if !value.is_empty() {
             let v = format!("{}=", item);
             let rp = format!("{}=", value);
             context = context.replace(&v, &rp);
-        };
-    };
+        }
+    }
 
     context
+}
+
+/// extract all html props into a vector
+fn extract_html_props(context: &String) -> Vec<String> {
+    let mut props: Vec<String> = vec![];
+    let mut current_prop = String::from("");
+    let mut space_before_text = false;
+
+    // get all html props into a vec
+    for c in context.chars() {
+        // break on end tag ignoring children
+        if c == '>' {
+            break;
+        }
+        if c == '=' {
+            space_before_text = false;
+            props.push((*current_prop).to_string());
+            current_prop.clear();
+        }
+        if space_before_text {
+            current_prop.push(c);
+        }
+        if c == ' ' {
+            space_before_text = true;
+        }
+    }
+
+    props
 }
 
 #[test]
@@ -301,11 +332,25 @@ fn convert_props_react_test() {
     let html = r#"<img class="something" for="mystuff">"#;
     let react_html = convert_props_react(html.to_string());
 
-    assert_eq!("<img className=\"something\" htmlFor=\"mystuff\">", react_html);
+    assert_eq!(
+        "<img className=\"something\" htmlFor=\"mystuff\">",
+        react_html
+    );
 
     // convert special props class, for, and other props
     let html = r#"<img class="something" for="mystuff" tabindex="2">"#;
     let react_html = convert_props_react(html.to_string());
 
-    assert_eq!("<img className=\"something\" htmlFor=\"mystuff\" tabIndex=\"2\">", react_html);
+    assert_eq!(
+        "<img className=\"something\" htmlFor=\"mystuff\" tabIndex=\"2\">",
+        react_html
+    );
+}
+
+#[test]
+fn extract_html_props_test() {
+    let html = r#"<img class="something" for="mystuff" tabindex="2">"#;
+    let props = extract_html_props(&html.to_string());
+
+    assert_eq!(props, vec!["class", "for", "tabindex"]);
 }
