@@ -3,9 +3,16 @@
 version = 3
 
 [[package]]
+name = "convert_case"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb4a24b1aaf0fd0ce8b45161144d6f42cd91677fd5940fd431183eb023b3a2b8"
+
+[[package]]
 name = "html-to-react"
-version = "0.2.0"
+version = "0.3.2"
 dependencies = [
+ "convert_case",
  "lazy_static",
 ]
 

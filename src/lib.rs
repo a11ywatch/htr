@@ -1,7 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
 
+extern crate convert_case;
+
 use std::collections::BTreeMap;
+use convert_case::{Case, Casing};
 
 /// convert props to react
 pub fn convert_props_react(ctx: String) -> String {
@@ -280,12 +283,16 @@ pub fn convert_props_react(ctx: String) -> String {
     let props: Vec<String> = extract_html_props(&context);
 
     for item in props.iter() {
-        let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
-
-        if !value.is_empty() {
-            let v = format!("{}=", item);
-            let rp = format!("{}=", value);
-            context = context.replace(&v, &rp);
+        if item == "style" {
+            context = create_style_object(&mut context);
+        } else {
+            let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
+    
+            if !value.is_empty() {
+                let v = format!("{}=", item);
+                let rp = format!("{}=", value);
+                context = context.replace(&v, &rp);
+            }
         }
     }
 
@@ -297,7 +304,7 @@ fn extract_html_props(context: &String) -> Vec<String> {
     let mut props: Vec<String> = vec![];
     let mut current_prop = String::from("");
     let mut space_before_text = false;
-
+    
     // get all html props into a vec
     for c in context.chars() {
         // break on end tag ignoring children
@@ -317,7 +324,68 @@ fn extract_html_props(context: &String) -> Vec<String> {
         }
     }
 
+    // sort the vec for btree linear lookup performance
+    props.sort();
+
     props
+}
+
+
+/// manipulate the style properties to react
+pub fn create_style_object(ctx: &mut String) -> String {
+    let style_matcher = if ctx.contains("style='") {
+        r#"'"#
+    } else {
+        r#"""#
+    };
+
+    let style_start = format!(r#"style={}"#, style_matcher);
+    let (style_string, start_idx, end_idx) = text_between(&ctx, &style_start, style_matcher);
+    
+    let mut current_prop = String::from("");
+    let mut space_before_text = false;
+    
+    let mut style_replacer = style_string.clone();
+
+    // get all html props into a vec
+    for c in style_string.chars() {
+        if space_before_text {
+            current_prop.push(c);
+        }
+        if c == ';' {
+            space_before_text = true;
+            style_replacer = style_replacer.replace(";", ",");
+            current_prop.clear();
+        }
+        if c == ':' {
+            let clp = &current_prop.trim();
+            let camel_style = &clp.to_case(Case::Camel);
+
+            style_replacer = style_replacer.replace(&*clp, &camel_style);
+            space_before_text = false;
+            current_prop.clear();
+        }
+    }
+
+    let style_replacer = format!("{}{}{}", "style={{", style_replacer, "}}");
+
+    ctx.replace_range(start_idx-7..start_idx + end_idx + 1, &style_replacer);
+
+    ctx.to_owned()
+}
+
+
+/// get the text between two strings
+fn text_between(search_str: &String, start_str: &String, end_str: &str) -> (String, usize, usize) { 
+    let start_idx = {
+        let start_point = search_str.find(start_str);
+        start_point.unwrap() + start_str.len()
+    };
+
+    let remaining = &search_str[start_idx..];
+    let end_idx = remaining.find(&end_str).unwrap_or(remaining.len());
+
+    (remaining[..end_idx].to_string(), start_idx, end_idx)
 }
 
 #[test]
@@ -353,4 +421,15 @@ fn extract_html_props_test() {
     let props = extract_html_props(&html.to_string());
 
     assert_eq!(props, vec!["class", "for", "tabindex"]);
+}
+
+#[test]
+fn convert_props_react_styles_test() {
+    let html = r#"<img class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">"#;
+    let props = convert_props_react(html.to_string());
+
+    assert_eq!(
+        "<img className=\"something\" htmlFor=\"mystuff\" tabIndex=\"2\" style={{color: white, backgroundColor: black}}>",
+        props
+    );
 }
