@@ -304,19 +304,28 @@ fn extract_html_props(context: &String) -> Vec<String> {
     let mut props: Vec<String> = vec![];
     let mut current_prop = String::from("");
     let mut space_before_text = false;
-    
+    let mut inside_tag = false;
+
     // get all html props into a vec
     for c in context.chars() {
-        if c == '=' {
-            space_before_text = false;
-            props.push((*current_prop).to_string());
-            current_prop.clear();
+        if inside_tag {
+            if c == '=' {
+                space_before_text = false;
+                props.push((*current_prop).to_string());
+                current_prop.clear();
+            }
+            if space_before_text {
+                current_prop.push(c);
+            }
+            if c == ' ' {
+                space_before_text = true;
+            }
         }
-        if space_before_text {
-            current_prop.push(c);
+        if c == '<' {
+            inside_tag = true;
         }
-        if c == ' ' {
-            space_before_text = true;
+        if c == '>' {
+            inside_tag = false;
         }
     }
 
