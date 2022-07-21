@@ -215,7 +215,7 @@ dependencies = [
 
 [[package]]
 name = "htr"
-version = "0.5.2"
+version = "0.5.6"
 dependencies = [
  "convert_case",
  "lazy_static",

@@ -309,7 +309,7 @@ pub fn convert_props_react(ctx: String) -> String {
 
     for item in props.iter() {
         if item == "style" {
-            context = create_style_object(&mut context);
+            create_style_object(&mut context);
         } else {
             let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
 
@@ -360,8 +360,8 @@ fn extract_html_props(context: &String) -> Vec<String> {
     props
 }
 
-/// manipulate the style properties to react
-pub fn create_style_object(ctx: &mut String) -> String {
+/// manipulate and mutate the style properties to react
+pub fn create_style_object(ctx: &mut String) -> &mut String {
     let style_matcher = if ctx.contains("style='") {
         r#"'"#
     } else {
@@ -429,7 +429,7 @@ pub fn create_style_object(ctx: &mut String) -> String {
 
     ctx.replace_range(start_idx - 7..start_idx + end_idx + 1, &style_replacer);
 
-    ctx.to_owned()
+    ctx
 }
 
 /// get the text between two strings
@@ -462,7 +462,7 @@ pub fn convert_to_react(ctx: String, component_name: String) -> String {
     let component_name = format!(" {}", component_name.trim());
 
     let component = format!(
-        r#"import React from "react"
+        r###"import React from "react"
     
 function{}() {{
     return (
@@ -470,7 +470,7 @@ function{}() {{
         {}
         </>
     )
-}}"#,
+}}"###,
         component_name, react_html
     );
 
