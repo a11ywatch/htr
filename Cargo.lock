@@ -222,6 +222,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "htr-test"
+version = "0.5.6"
+dependencies = [
+ "htr",
+]
+
+[[package]]
 name = "htr_examples"
 version = "0.5.1"
 dependencies = [
