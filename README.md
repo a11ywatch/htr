@@ -63,15 +63,12 @@ fn main(){
 
 This project uses BTrees and parses the html with the order sorted before lookup for speed.
 
-You can combine this project with [html-parser](https://docs.rs/html_parser/latest/html_parser/) to convert elements into React ready components.
-
 An [example](https://github.com/A11yWatch/a11ywatch/blob/main/cli/src/fs/code_fix.rs) of this being used with [ripgrep](https://github.com/BurntSushi/ripgrep) to perform search and replace from scraped content to find exactly where in the codebase it would be, the react way.
 
 ## TODO
 
-1. inline css styles with backticks
-1. inline js scripts with backticks
-1. fix double quote inject in convert_to_react.
+1. inline symbols with backticks
+1. fix parsing css url() base64 data trailing comma issues
 
 ## License
 

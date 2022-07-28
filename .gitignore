@@ -1,2 +1,5 @@
 target
 .DS_Store
+# tests foo
+foo.ts
+foo1.ts

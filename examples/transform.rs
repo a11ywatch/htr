@@ -28,7 +28,7 @@ fn main() {
         </address>
       </body>
     </html>"#;
-    let react_html = convert_to_react(html.to_string(), "MyPage".to_string());
+    let react_html = convert_to_react(&html.to_string(), "MyPage".to_string());
 
     println!("{}", react_html);
 }

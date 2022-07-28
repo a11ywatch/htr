@@ -11,7 +11,7 @@ pub fn bench_speed(c: &mut Criterion) {
 
     group.sample_size(sample_count);
     group.bench_function(format!("simultaneous: {}", sample_title), |b| {
-        b.iter(|| convert_props_react(html.to_string()))
+        b.iter(|| convert_props_react(&html.to_string()))
     });
     group.finish();
 }
@@ -32,7 +32,7 @@ pub fn bench_speed_concurrent_x10(c: &mut Criterion) {
                 .into_iter()
                 .map(|_| {
                     thread::spawn(move || {
-                        black_box(convert_props_react(html.to_string()));
+                        black_box(convert_props_react(&html.to_string()));
                     })
                 })
                 .collect();

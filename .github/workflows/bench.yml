@@ -1,9 +1,9 @@
 name: Benches
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,4 +25,4 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Run Benchmarks
-        run: cd ./htr/benches && cargo bench
+        run: cargo bench
