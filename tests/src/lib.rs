@@ -119,6 +119,7 @@ fn convert_react_component_children_test() {
             </div>
         </div>
         <script>window.alert()</script>
+        <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600">
         <span class="react" style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 577px; "
         ></span>
         "#;
@@ -129,11 +130,11 @@ fn convert_react_component_children_test() {
     let style_object2 = r#"style={{position: "relative", display: "block", marginLeft: "auto", marginRight: "auto", maxWidth: "577px"}}"#;
 
     // uncomment to debug
-    // use std::fs::File;
-    // use std::io::prelude::*;
+    use std::fs::File;
+    use std::io::prelude::*;
 
-    // let mut file = File::create("foo.tsx").unwrap();
-    // file.write_all(props.as_bytes()).unwrap();
+    let mut file = File::create("foo.ts").unwrap();
+    file.write_all(props.as_bytes()).unwrap();
 
     let results = format!(
         r#"import React from "react"
@@ -148,6 +149,7 @@ function Something() {{
             </div>
         </div>
         <script>{{`window.alert()`}}</script>
+        <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"/>
         <span className="react" {}
         ></span>
         </>

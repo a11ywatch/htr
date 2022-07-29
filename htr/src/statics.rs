@@ -267,4 +267,22 @@ lazy_static! {
         ("onwaiting", "onWaiting"),
         ("onwheel", "onWheel")
     ]);
+
+    /// self enclosing tags - contains start < from builder
+    pub static ref SELF_ENCLOSED_TAGS: [&'static str; 14] = [
+        "<area",
+        "<base",
+        "<br",
+        "<col",
+        "<embed",
+        "<hr",
+        "<img",
+        "<input",
+        "<link",
+        "<meta",
+        "<param",
+        "<source",
+        "<track",
+        "<wbr"
+    ];
 }

@@ -37,7 +37,7 @@ mod transform;
 pub use transform::{extract_html_props, create_style_object};
 /// static map of html props
 mod statics;
-pub use statics::HTML_PROPS;
+pub use statics::{HTML_PROPS, SELF_ENCLOSED_TAGS};
 
 /// convert props to react
 pub fn convert_props_react(ctx: &String) -> String {
@@ -110,37 +110,50 @@ pub fn convert_children_react(ctx: &mut String) -> String {
 
     let mut empty_children = false; // prevent updating empty children
 
-    // TODO: capture current tag of elements that need to self close
     // TODO: capture url(base64; comma cases to build next
+    let mut block_self_enclose = false;
 
     while let Some(c) = peekable.next() {
         result.push(c);
+
+        // peek into next to prevent sets
+        let peeked = if c == '/' || entry_start || entry_end  {
+            if let Some(cc) = peekable.peek() {
+                cc.to_string()
+            } else {
+                String::from("")
+            }
+        } else {
+            String::from("")
+        };
 
         if c == '<' {
             inside_tag = true;
             store_tag = true;
         }
+        if c == '/' && peeked == ">" {
+            block_self_enclose = true;
+        }
         if c == '>' {
             inside_tag = false;
+            // self enclose the tag
+            if  SELF_ENCLOSED_TAGS.contains(&current_prop.trim_end().as_ref()) {
+                if !block_self_enclose {
+                    result.pop();
+                    result.push('/');
+                    result.push('>');
+                } else {
+                    block_self_enclose = false;
+                }
+            }
         }
 
-        // peek into next to prevent sets
-        let peeked = if entry_start || entry_end  {
-            if let Some(cc) = peekable.peek() {
-                cc
-            } else {
-                &' '
-            }
-        } else {
-            &' '
-        };
-
-        // entry start children append
+        // entry start children append [TODO: all tags that require inlining]
         if entry_start && c == '>' {
             entry_start = false;
             store_tag = true;
 
-            if peeked != &'<' {
+            if peeked != "<" {
                 result.push('{');
                 result.push('`');
                 empty_children = false;
@@ -191,7 +204,7 @@ pub fn convert_children_react(ctx: &mut String) -> String {
             if current_prop.starts_with("</") && c == '>'{
                 store_tag = false;
             }
-        } else {
+        } else if !inside_tag {
             current_prop.clear();
         }
     }

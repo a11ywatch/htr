@@ -206,7 +206,7 @@ dependencies = [
 
 [[package]]
 name = "htr"
-version = "0.5.19"
+version = "0.5.22"
 dependencies = [
  "convert_case",
  "lazy_static",
@@ -214,7 +214,7 @@ dependencies = [
 
 [[package]]
 name = "htr-test"
-version = "0.5.17"
+version = "0.5.22"
 dependencies = [
  "htr",
 ]
