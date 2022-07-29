@@ -32,19 +32,34 @@ use htr::convert_to_react;
 
 /// convert html to react component
 fn main(){
-    let html = r#"<div class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">"#;
-    let react_component = convert_to_react(html.to_string(), "Something");
+    let html = r#"
+        <script>window.alert()</script>
+        <div class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">
+            <div class="child" for="mychildstuff" tabindex="2">
+                child
+            </div>
+        </div>
+        <span class="react" style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 577px; "
+        ></span>
+        "#;
+
+    let react_component = convert_to_react(&html.to_string(), "Something");
 
     println!("{}", react_component);
     // import React from "react"
     //
     // function Something() {
     //     return (
-    //         <div className="something" htmlFor="mystuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
-    //             <div className="child" htmlFor="mychildstuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
-    //                 child
-    //             </div>
-    //         </div>
+    //        <>
+    //            <script>window.alert()</script>
+    //                <div className="something" htmlFor="mystuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
+    //                  <div className="child" htmlFor="mychildstuff" tabIndex="2">
+    //                      child
+    //                  </div>
+    //              </div>
+    //              <span className="react" style={{position: "relative", display: "block", marginLeft: "auto", marginRight: "auto", maxWidth: "577px"}}
+    //              ></span>
+    //        </>
     //     )
     // }
 }
@@ -69,6 +84,7 @@ An [example](https://github.com/A11yWatch/a11ywatch/blob/main/cli/src/fs/code_fi
 
 1. inline symbols with backticks
 1. fix parsing css url() base64 data trailing comma issues
+1. add CLI usage
 
 ## License
 
