@@ -51,7 +51,7 @@ fn main(){
     // function Something() {
     //     return (
     //        <>
-    //            <script>window.alert()</script>
+    //            <script>{`window.alert()`}</script>
     //                <div className="something" htmlFor="mystuff" tabIndex="2" style={{color: "white", backgroundColor: "black"}}>
     //                  <div className="child" htmlFor="mychildstuff" tabIndex="2">
     //                      child
@@ -82,8 +82,7 @@ An [example](https://github.com/A11yWatch/a11ywatch/blob/main/cli/src/fs/code_fi
 
 ## TODO
 
-1. inline symbols with backticks
-1. fix parsing css url() base64 data trailing comma issues
+1. inline symbols handling ex: `<div>{</div>`
 1. add CLI usage
 
 ## License
