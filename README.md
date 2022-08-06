@@ -65,6 +65,17 @@ fn main(){
 }
 ```
 
+## CLI
+
+If you need to use [HTR via Command Line](./htr_cli/)
+
+```
+cargo install htr_cli
+
+# transform to react
+htr transform --html '<div class="something" for="mystuff" tabindex="2" style="color: white; background-color: black">'
+```
+
 ## Benchmark Results
 
 ### transform
@@ -83,7 +94,6 @@ An [example](https://github.com/A11yWatch/a11ywatch/blob/main/cli/src/fs/code_fi
 ## TODO
 
 1. inline symbols handling ex: `<div>{</div>`
-1. add CLI usage
 
 ## License
 

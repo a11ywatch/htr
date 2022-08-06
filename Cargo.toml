@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "htr",
+    "htr_cli",
     # internal
     "examples",
     "benches",
