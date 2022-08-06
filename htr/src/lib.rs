@@ -17,7 +17,7 @@
 //!
 //! [`convert_props_react`]: htr/fn.convert_props_react.html
 //! [`convert_to_react`]: htr/fn.convert_to_react.html
-//! 
+//!
 //! # Basic usage
 //!
 //! First, you will need to add `htr` to your `Cargo.toml`.
@@ -30,11 +30,11 @@ extern crate lazy_static;
 
 extern crate convert_case;
 
-/// application utils
-mod utils;
 /// transform functions
 mod transform;
-pub use transform::{extract_html_props, create_style_object};
+/// application utils
+mod utils;
+pub use transform::{create_style_object, extract_html_props};
 /// static map of html props
 mod statics;
 pub use statics::{HTML_PROPS, SELF_ENCLOSED_TAGS};
@@ -51,9 +51,7 @@ pub fn convert_props_react(ctx: &String) -> String {
             let value = HTML_PROPS.get(&*item.to_owned()).unwrap_or(&"");
 
             if !value.is_empty() {
-                let v = format!("{}=", item);
-                let rp = format!("{}=", value);
-                context = context.replace(&v, &rp);
+                context = context.replace(&format!("{}=", item), &format!("{}=", value));
             }
         }
     }
@@ -65,7 +63,7 @@ pub fn convert_props_react(ctx: &String) -> String {
 pub fn convert_to_react(ctx: &String, component_name: String) -> String {
     let react_html = convert_props_react(ctx);
     let mut react_html = react_html.trim().to_owned();
-        
+
     // remove html tags
     if react_html.starts_with("<!DOCTYPE html>") {
         react_html = react_html.replace("<!DOCTYPE html>", "").trim().to_owned();
@@ -75,10 +73,14 @@ pub fn convert_to_react(ctx: &String, component_name: String) -> String {
         react_html = react_html.replace("</html>", "");
     }
     // add slow re-iterate contains [TODO get values upfront in convert_props]
-    if react_html.contains("<script") || react_html.contains("<style") || react_html.contains("<script>") || react_html.contains("<style>") {
+    if react_html.contains("<script")
+        || react_html.contains("<style")
+        || react_html.contains("<script>")
+        || react_html.contains("<style>")
+    {
         react_html = convert_children_react(&mut react_html);
     }
-    
+
     let component_name = format!(" {}", component_name.trim());
 
     let component = format!(
@@ -99,7 +101,7 @@ function{}() {{
 
 /// transform inline react children from script and style tags
 pub fn convert_children_react(ctx: &mut String) -> String {
-    let mut entry_start = false; // entry start 
+    let mut entry_start = false; // entry start
     let mut entry_end = false; // end of tag
     let mut inside_tag = false; // inside a start tag
     let mut store_tag = false; // can store tagname
@@ -117,7 +119,7 @@ pub fn convert_children_react(ctx: &mut String) -> String {
         result.push(c);
 
         // peek into next to prevent sets
-        let peeked = if c == '/' || entry_start || entry_end  {
+        let peeked = if c == '/' || entry_start || entry_end {
             if let Some(cc) = peekable.peek() {
                 cc.to_string()
             } else {
@@ -137,7 +139,7 @@ pub fn convert_children_react(ctx: &mut String) -> String {
         if c == '>' {
             inside_tag = false;
             // self enclose the tag
-            if  SELF_ENCLOSED_TAGS.contains(&current_prop.trim_end().as_ref()) {
+            if SELF_ENCLOSED_TAGS.contains(&current_prop.trim_end().as_ref()) {
                 if !block_self_enclose {
                     result.pop();
                     result.push('/');
@@ -165,7 +167,7 @@ pub fn convert_children_react(ctx: &mut String) -> String {
         }
 
         // entry end children prepend
-        if entry_end  {
+        if entry_end {
             if !empty_children {
                 for _ in 0..current_prop.len() + 1 {
                     result.pop();
@@ -201,13 +203,13 @@ pub fn convert_children_react(ctx: &mut String) -> String {
             }
 
             // end tag prevent store
-            if current_prop.starts_with("</") && c == '>'{
+            if current_prop.starts_with("</") && c == '>' {
                 store_tag = false;
             }
         } else if !inside_tag {
             current_prop.clear();
         }
     }
-    
+
     result
 }

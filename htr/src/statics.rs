@@ -1,5 +1,4 @@
-
-use std::{collections::BTreeMap};
+use std::collections::BTreeMap;
 
 lazy_static! {
     /// html static list of properties that convert to camel-case [https://reactjs.org/docs/dom-elements.html]

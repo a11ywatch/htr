@@ -10,7 +10,7 @@ This helps when using find and replace tools when you scrape content getting raw
 
 ```toml
 [dependencies]
-htr = "0.5.4"
+htr = "0.5.26"
 ```
 
 ```rust
@@ -67,7 +67,7 @@ fn main(){
 
 ## CLI
 
-If you need to use [HTR via Command Line](./htr_cli/)
+If you need [Command Line](./htr_cli/) usage.
 
 ```
 cargo install htr_cli

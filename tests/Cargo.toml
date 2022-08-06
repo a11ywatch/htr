@@ -1,6 +1,6 @@
 [package]
 name = "htr-test"
-version = "0.5.23"
+version = "0.5.26"
 edition = "2021"
 license = "MIT"
 description = "convert a html string to react"
@@ -10,8 +10,9 @@ categories = ["encoding", "parser-implementations", "web-programming"]
 documentation = "https://docs.rs/htr"
 include = ["src/*", "LICENSE", "README.md"]
 authors = ["j-mendez <jeff@a11ywatch.com>"]
+publish = false
 
 [dependencies.htr]
-version = "0.5.23"
+version = "0.5.26"
 path = "../htr"
 default-features = false

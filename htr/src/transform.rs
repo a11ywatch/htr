@@ -51,14 +51,15 @@ pub fn create_style_object(cc: &String) -> String {
     let mut current_prop = String::from("");
     let mut style_replacer = style_string.clone();
 
+    // determine if base64 img url
     let mut base64_value = false;
 
-    // replace inline propert names and semi-colons to commas
+    // replace inline property names and semi-colons to commas
     for c in style_string.chars() {
         current_prop.push(c);
 
         if c == ';' {
-            style_replacer = style_replacer.replace(";", ",");
+            style_replacer = style_replacer.replacen(";", ",", 1);
             current_prop.clear();
         }
         if c == ':' {
@@ -67,7 +68,7 @@ pub fn create_style_object(cc: &String) -> String {
                 base64_value = true;
             }
             let clp = current_prop.trim();
-            style_replacer = style_replacer.replace(&clp, &clp.to_case(Case::Camel));
+            style_replacer = style_replacer.replacen(&clp, &clp.to_case(Case::Camel), 1);
             current_prop.clear();
         }
     }
@@ -87,7 +88,7 @@ pub fn create_style_object(cc: &String) -> String {
     // add double quotes to react props style values
     for (i, c) in style_replacer.chars().enumerate() {
         current_value.push(c);
-        
+
         // insert at non empty whitespace beforehand
         if c != ' ' && space_before_text && needs_insert_quote {
             style_string.push('\"');
@@ -117,9 +118,8 @@ pub fn create_style_object(cc: &String) -> String {
                 space_before_text = false;
             }
         }
-
     }
-    
+
     // clean styles for any trailing commas
     style_string = style_string.trim_end().to_string();
     if style_string.ends_with(",") {

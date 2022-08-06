@@ -257,7 +257,7 @@ dependencies = [
 
 [[package]]
 name = "htr"
-version = "0.5.24"
+version = "0.5.26"
 dependencies = [
  "convert_case",
  "lazy_static",
@@ -265,14 +265,14 @@ dependencies = [
 
 [[package]]
 name = "htr-test"
-version = "0.5.23"
+version = "0.5.26"
 dependencies = [
  "htr",
 ]
 
 [[package]]
 name = "htr_cli"
-version = "0.5.24"
+version = "0.5.26"
 dependencies = [
  "clap 3.2.16",
  "htr",
