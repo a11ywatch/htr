@@ -1,6 +1,6 @@
 [package]
 name = "htr_cli"
-version = "0.5.26"
+version = "0.5.27"
 authors = ["j-mendez <jeff@a11ywatch.com>"]
 description = "convert html to react fast"
 repository = "https://github.com/a11ywatch/htr"

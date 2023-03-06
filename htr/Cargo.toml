@@ -1,6 +1,6 @@
 [package]
 name = "htr"
-version = "0.5.26"
+version = "0.5.27"
 edition = "2021"
 license = "MIT"
 description = "convert html to react fast"

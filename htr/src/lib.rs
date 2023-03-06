@@ -40,8 +40,8 @@ mod statics;
 pub use statics::{HTML_PROPS, SELF_ENCLOSED_TAGS};
 
 /// convert props to react
-pub fn convert_props_react(ctx: &String) -> String {
-    let mut context = ctx.clone();
+pub fn convert_props_react(ctx: &str) -> String {
+    let mut context = ctx.to_string();
     let props: Vec<String> = extract_html_props(&context);
 
     for item in props.iter() {
